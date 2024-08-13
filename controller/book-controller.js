@@ -1,6 +1,10 @@
 const { bookmodel, usermodel } = require("../model/index");
 
 
+
+const issuebook=require("../DTOS/book-dto");
+
+
 const getallBooks=async (req,res)=> {
     
     const book=await bookmodel.find();
@@ -44,8 +48,65 @@ const getallissuedbooks= async(req,res)=>{
 
 //    data transfer object(DTD)
 
+const issuebokkss=users.map((each)=>{
+    new issuebook(each);
+});
+
+if(issuebokkss.length===0){
+    res.status(404).json({
+        success:false,
+        message:"no book have been issued yet",
+    });
+}
+return res.status(200).json({
+    success:true,
+     message:"success",
+})
+}
+
+
+const addnewbook=async(req,res)=>{
+
+    const data=req.body;
+
+    if(!data){
+        res.status(404).json({
+            success:false,
+            message:"NO BOOK FOUNDED"
+        });
+    }
+    const book= await bookmodel.create(data);
+
+    const getbooks=await bookmodel.find();
+
+    return res.status(201).json({
+        success:true,
+        message:"success",
+        data:getbooks,
+    });
+}
+
+
+const updatedbook=async(req,res)=>{
+
+    const {id}=req.params;
+    const {data}=req.body;
+
+    const book= await bookmodel.findOneAndUpdate({
+       _id:id,
+    },
+data,
+{
+    new:true,
+});
+return res.status(200).json({
+    success:true,
+    message:"updated a book by their id",
+    data:book,
+});
+
 }
 
 
 
-module.exports={getallBooks,getbookbyid,getallissuedbooks};
+module.exports = { getallBooks, getbookbyid, getallissuedbooks, addnewbook,updatedbook };

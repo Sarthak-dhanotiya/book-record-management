@@ -6,9 +6,12 @@ const {
   getallBooks,
   getbookbyid,
   getallissuedbooks,
+  addnewbook,
+  updatedbook,
 } = require("../controller/book-controller");
 
 const {books}=require("../data/books.json");
+
 const { users } = require("../data/users.json");
 
 
@@ -55,63 +58,37 @@ router.get("/:id", getbookbyid);
 //     });
 // });
 
-router.post("/",(req,res)=>{
-    const {id,name,author,genre,price,publisher}=req.body;
 
-    const user=books.find((allbook)=> allbook.id==id);
-    if(user){
-        return res.status(404).json({
-          success: false,
-          message: "the user is already exists",
-        });
-    }
 
-        books.push({
-            id,
-            name,
-            author,
-            genre,
-            price,
-            publisher
-        });
-        return res.status(201).json({
-          success: true,
-          message: "success",
-          data: books,
-        });
-});
 
-router.put("/:id",(req,res)=>{
-    const {id}=req.params;
-    const {date}=req.body;
+router.post("/", addnewbook);
+// router.post("/",(req,res)=>{
+//     const {id,name,author,genre,price,publisher}=req.body;
 
-    const user=books.find((all)=>all.id===id);
-    if(!user){
-      return  res.status(404).json({
-            success:false,
-            message:"errorr is occur",
-        });
+//     const user=books.find((allbook)=> allbook.id==id);
+//     if(user){
+//         return res.status(404).json({
+//           success: false,
+//           message: "the user is already exists",
+//         });
+//     }
 
-    }
+//         books.push({
+//             id,
+//             name,
+//             author,
+//             genre,
+//             price,
+//             publisher
+//         });
+//         return res.status(201).json({
+//           success: true,
+//           message: "success",
+//           data: books,
+//         });
+// });
 
-    const updatedata=books.map((even)=>{
-        if(even.id===id){
-            return {
-                ...even,
-                ...date,
-            }
-            
-        }
-
-        return even;
-
-    });
-    res.status(200).json({
-      success: true,
-      message: "success",
-      body: updatedata,
-    });
-});
+router.put("/:id", updatedbook);
 
 
 //   route:/users/:ID,
